@@ -1,39 +1,40 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <queue>
+#include "GraphicHandler.h"
+#include "InputHandler.h"
+#include "Task.h"
+#include "Server.h"
+#include "Enums.h"
 
 class Client
 {
+private:
+	State state;
+	GraphicHandler graphicHandler;
+	InputHandler inputHandler;
+	sf::RenderWindow window;
+	std::queue<Task> taskInput;
+	std::queue<Task> taskOutput;
+
 public:
-	Client(std::string name) {
-		std::string name;
-		std::queue<Task> taskInput;
-		std::queue<Task> taskOutput;
+	Client(std::string name) : window(sf::VideoMode(800, 600), "Not Tetris"), graphicHandler(window), inputHandler(window){
+		this->state = State::MAIN_MENU;
 	}
 
 	void Run() {
-		InitGraphics();
+		Init();
 	}
 
-	void InitGraphics() {
-		sf::RenderWindow window(sf::VideoMode(800, 600), "Not Tetris");
-
-		sf::Event event;
-
-		while (window.isOpen()) {
-
-			while (window.pollEvent(event)) {
-
-				if (event.type == sf::Event::Closed) {
-
-					window.close();
-				}
-			}
-		}
+	std::unique_ptr<Server> CreateServer() {
+		return std::make_unique<Server>();
 	}
 
-	void CreateServer() {
-		
+	void Init() {
+		sf::Thread thread(&GraphicHandler::Render, &graphicHandler);
+		thread.launch();
+		sf::Thread thread2(&InputHandler::CheckInput, &inputHandler);
+		thread2.launch();
 	}
 };
 
