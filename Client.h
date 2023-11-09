@@ -14,8 +14,11 @@ private:
 	GraphicHandler graphicHandler;
 	InputHandler inputHandler;
 	sf::RenderWindow window;
-	std::queue<Task> taskInput;
-	std::queue<Task> taskOutput;
+	std::queue<Task> graphicTaskInput;
+	std::queue<Task> graphicTaskOutput;
+
+	std::queue<Task> inputTaskInput;
+	std::queue<Task> inpuTaskOutput;
 
 public:
 	Client(std::string name) : window(sf::VideoMode(800, 600), "Not Tetris"), graphicHandler(window), inputHandler(window){
