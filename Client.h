@@ -2,17 +2,18 @@
 #include <SFML/Graphics.hpp>
 #include <queue>
 #include "GraphicHandler.h"
-#include "InputHandler.h"
+#include "Player.h"
 #include "Task.h"
 #include "Server.h"
 #include "Enums.h"
+#include <thread>
 
 class Client
 {
 private:
 	State state;
 	GraphicHandler graphicHandler;
-	InputHandler inputHandler;
+	Player player;
 	sf::RenderWindow window;
 	std::queue<Task> graphicTaskInput;
 	std::queue<Task> graphicTaskOutput;
@@ -21,7 +22,7 @@ private:
 	std::queue<Task> inpuTaskOutput;
 
 public:
-	Client(std::string name) : window(sf::VideoMode(800, 600), "Not Tetris"), graphicHandler(window), inputHandler(window){
+	Client(std::string name) : window(sf::VideoMode(800, 600), "Not Tetris"), graphicHandler(window) {
 		this->state = State::MAIN_MENU;
 	}
 
@@ -34,10 +35,10 @@ public:
 	}
 
 	void Init() {
-		sf::Thread thread(&GraphicHandler::Render, &graphicHandler);
-		thread.launch();
-		sf::Thread thread2(&InputHandler::CheckInput, &inputHandler);
-		thread2.launch();
+		std::thread thread(&GraphicHandler::Render, &graphicHandler);
+		std::thread thread2(&InputRegister::CheckInput, player.playerMovement.inputRegister);
+		thread.join();
+		thread2.join();
 	}
 };
 

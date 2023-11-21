@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Enums.h"
+#include <iostream>
 
 class GraphicHandler
 {
@@ -19,7 +20,7 @@ public:
 
 	void Render() {
 		sf::Event event;
-
+		
 		while (window_.isOpen()) {
 			switch (currentState) {
 				case State::MAIN_MENU:
